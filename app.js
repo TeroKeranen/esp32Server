@@ -46,6 +46,12 @@ wss.on('connection', (ws, req) => {
 
       ws.on('message', (message) => {
           console.log('[WS] Received:', message.toString());
+
+          if (message.toString() === 'ping') {
+            // Vastaa pongilla
+            ws.send('pong');
+            console.log('[WS] Responded with pong');
+        }
           // Voit käsitellä ESP32:n tai muiden laitteiden lähettämiä viestejä täällä
           // Esimerkiksi: ws.send('Hello from server');
       });
