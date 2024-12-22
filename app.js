@@ -7,6 +7,7 @@ const WebSocket = require('ws');
 const db = require('./util/database');
 
 const app = express();
+
 // Routes
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -86,7 +87,7 @@ app.get('/', (req, res) => {
 
 // --- KÄYNNISTETÄÄN SERVERI ---
 // HUOM: Emme käytä app.listen(...) vaan server.listen(...)
-const PORT = 3000;
-server.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
+
+app.listen(process.env.PORT || 3000, () => {
+  console.log("Server started")
+})
