@@ -21,23 +21,49 @@ let esp32Client = null;
 const wss = new WebSocket.Server({ server, path: '/ws' });
 
 // WebSocket-yhteyden käsittely
-wss.on('connection', (ws) => {
-    console.log('[WS] New client connected');
+// wss.on('connection', (ws) => {
+//     console.log('[WS] New client connected');
 
-      // Tallennetaan WebSocket, jotta voimme lähettää viestin /api/led -reitillä
-     esp32Client = ws;
+//       // Tallennetaan WebSocket, jotta voimme lähettää viestin /api/led -reitillä
+//      esp32Client = ws;
   
-    ws.on('message', (message) => {
-      console.log('[WS] Received:', message.toString());
-      // Tässä voit käsitellä ESP32:n tai minkä tahansa laitteen lähettämiä viestejä
-      // Voit myös vastata takaisin: ws.send('Hello from server');
-    });
+//     ws.on('message', (message) => {
+//       console.log('[WS] Received:', message.toString());
+//       // Tässä voit käsitellä ESP32:n tai minkä tahansa laitteen lähettämiä viestejä
+//       // Voit myös vastata takaisin: ws.send('Hello from server');
+//     });
   
-    ws.on('close', () => {
-      console.log('[WS] Client disconnected');
-    });
-  });
+//     ws.on('close', () => {
+//       console.log('[WS] Client disconnected');
+//     });
+//   });
+// WebSocket-yhteyden käsittely
+wss.on('connection', (ws, req) => {
+  // Tarkista, että yhteys tulee polusta '/ws'
+  if (req.url === '/ws') {
+      console.log('[WS] ESP32 client connected via /ws');
+      esp32Client = ws;
 
+      ws.on('message', (message) => {
+          console.log('[WS] Received:', message.toString());
+          // Voit käsitellä ESP32:n tai muiden laitteiden lähettämiä viestejä täällä
+          // Esimerkiksi: ws.send('Hello from server');
+      });
+
+      ws.on('close', () => {
+          console.log('[WS] ESP32 client disconnected');
+          esp32Client = null;
+      });
+
+      ws.on('error', (error) => {
+          console.error('[WS] WebSocket error:', error);
+      });
+  } else {
+      // Sulje yhteys, jos polku ei ole '/ws'
+      ws.close(1008, 'Invalid path');
+      console.log('[WS] Connection attempt to invalid path:', req.url);
+  }
+});
   // HTTP-reitti, jota mobiilisovellus kutsuu LEDin ohjaamiseksi.
 app.post("/api/led", (req, res) => {
     if (!esp32Client) {
@@ -88,6 +114,7 @@ app.get('/', (req, res) => {
 // --- KÄYNNISTETÄÄN SERVERI ---
 // HUOM: Emme käytä app.listen(...) vaan server.listen(...)
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log("Server started")
-})
+
+server.listen(process.env.PORT, () => {
+  console.log(`Server listening on port `);
+});
