@@ -56,3 +56,5 @@ router.post('/api/device', async (req,res) => {
 //         .then(() => res.status(201).json({ message: "Device registered successfully" }))
 //         .catch(err => res.status(500).json({ error: err.message }));
 // });
+
+module.exports = router;

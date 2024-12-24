@@ -2,6 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const testiRoutes = require('./routes/testi');
+const authRoutes = require('./routes/authRoutes')
 const http = require('http');
 const WebSocket = require('ws');
 const db = require('./util/database');
@@ -14,6 +15,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(testiRoutes);
+app.use(authRoutes);
 
 mongoose.connect(process.env.DATABASE_URL);
 mongoose.connection.on('connected', () => {
