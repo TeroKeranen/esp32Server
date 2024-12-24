@@ -14,7 +14,7 @@ const app = express();
 // Routes
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(testiRoutes);
+// app.use(testiRoutes);
 app.use(authRoutes);
 
 mongoose.connect(process.env.DATABASE_URL);
