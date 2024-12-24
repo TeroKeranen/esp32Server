@@ -10,6 +10,7 @@ const router = express.Router();
 // tallenna laite käyttäjälle
 router.post('/api/device', async (req,res) => {
     const { userId, deviceId, name, type, status } = req.body;
+    console.log("lähetetään tiedot: ", userId, deviceId, name);
 
     try {
         const user = await User.findById(userId);
