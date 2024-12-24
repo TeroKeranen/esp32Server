@@ -5,6 +5,8 @@ const testiRoutes = require('./routes/testi');
 const http = require('http');
 const WebSocket = require('ws');
 const db = require('./util/database');
+const mongoose = require('mongoose');
+
 
 const app = express();
 
@@ -12,6 +14,14 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(testiRoutes);
+
+mongoose.connect(process.env.DATABASE_URL);
+mongoose.connection.on('connected', () => {
+  console.log("Connected to mongodb")
+})
+mongoose.connection.on('error', (err) => {
+  console.log(err);
+})
 
 const server = http.createServer(app);
 
