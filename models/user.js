@@ -35,4 +35,6 @@ const userSchema = new mongoose.Schema({
 })
 
 
-mongoose.model('User', userSchema);
+// Luo ja exporttaa malli
+const User = mongoose.model('User', userSchema);
+module.exports = User;
