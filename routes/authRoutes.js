@@ -12,8 +12,13 @@ router.post('/api/device', async (req,res) => {
     const { userId, deviceId, name, type, status } = req.body;
     console.log("lähetetään tiedot: ", userId, deviceId, name);
 
+    if (!userId || !deviceId || !name) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
+
     try {
-        const user = await User.findById(userId);
+        const objectId = new mongoose.Types.ObjectId(userId);
+        const user = await User.findById(objectId);
 
         if (!user) {
             return res.status(404).json({error: 'User not found'});
