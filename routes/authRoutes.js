@@ -69,12 +69,12 @@ router.post('/api/device', async (req,res) => {
         }
 
         // lisätään uusi laite spacelle
-        // space.devices.push({
-        //     name,
-        //     type,
-        //     status,
-        //     deviceId
-        // });
+        space.devices.push({
+            name,
+            type,
+            status,
+            deviceId
+        });
 
         await user.save();
         res.status(201).json({message: "Device added successfully", user})
