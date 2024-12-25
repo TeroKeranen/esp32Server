@@ -15,7 +15,7 @@ const devicesSchema = new mongoose.Schema({
     deviceId: {
         type: String
     }
-})
+}, { _id: false });  // Tämä estää automaattisen _id:n generoinnin subdokumentille)
 
 const spaceSchema = new mongoose.Schema({
     name: {
