@@ -32,6 +32,7 @@ router.get('/api/devices/:userId', async (req,res) => {
             return res.status(404).json({error: 'User not found'});
         }
         console.log("User informations: ", user.spaces);
+        res.send(user.spaces)
         
     } catch (error) {
         
