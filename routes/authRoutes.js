@@ -63,31 +63,20 @@ router.post('/api/device', async (req,res) => {
         if (!space) {
             space = {
                 name: 'Default Space',
-                devices: []
+                devices: [name, type,status,deviceId]
             };
             user.spaces.push(space);
         }
 
         // lisätään uusi laite spacelle
-        space.devices.push({
-            name,
-            type,
-            status,
-            deviceId
-        });
+        // space.devices.push({
+        //     name,
+        //     type,
+        //     status,
+        //     deviceId
+        // });
 
-        console.log("Devices after push:", space.devices);  // Debug log
-
-        user.markModified('spaces');
-
-
-        await user.save().then((result) => {
-            console.log("Device saved successfully:", result);
-            res.status(201).json({ message: "Device added successfully", user });
-        }).catch((err) => {
-            console.error("Error saving device:", err);
-            res.status(500).json({ error: "Failed to save device" });
-        });
+        await user.save();
         res.status(201).json({message: "Device added successfully", user})
     } catch (error) {
         console.error("Error adding device:", error);
