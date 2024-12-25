@@ -69,7 +69,7 @@ router.post('/api/device', async (req,res) => {
         }
 
         // lisätään uusi laite spacelle
-        space.devices.push({
+        user.spaces.devices.push({
             name,
             type,
             status,
