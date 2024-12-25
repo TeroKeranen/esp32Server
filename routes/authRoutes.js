@@ -7,6 +7,37 @@ const User = require('../models/user')
 const router = express.Router();
 
 
+// // Hae käyttäjän laitteet
+// app.get('/api/devices/:userId', (req, res) => {
+//     const userId = req.params.userId;
+
+//     db.execute('SELECT * FROM devices WHERE user_id = ?', [userId])
+//         .then(([rows]) => res.json({ devices: rows }))
+//         .catch(err => res.status(500).json({ error: err.message }));
+// });
+
+
+router.get('/api/devices/:userId', async (req,res) => {
+    const userId = req.params.userId;
+
+    if (!userId) {
+        return res.status(400).json({error: "Missing userId"})
+    }
+    
+    try {
+        const objectId = new mongoose.Types.ObjectId(userId);
+        const user = await User.findById(objectId);
+
+        if (!user) {
+            return res.status(404).json({error: 'User not found'});
+        }
+        console.log("User informations: ", user);
+        
+    } catch (error) {
+        
+    }
+})
+
 // tallenna laite käyttäjälle
 router.post('/api/device', async (req,res) => {
     const { userId, deviceId, name, type, status } = req.body;

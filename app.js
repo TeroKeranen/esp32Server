@@ -113,14 +113,14 @@ app.post("/api/led", (req, res) => {
 //         .catch(err => res.status(500).json({ error: err.message }));
 // });
 
-// Hae käyttäjän laitteet
-app.get('/api/devices/:userId', (req, res) => {
-    const userId = req.params.userId;
+// // Hae käyttäjän laitteet
+// app.get('/api/devices/:userId', (req, res) => {
+//     const userId = req.params.userId;
 
-    db.execute('SELECT * FROM devices WHERE user_id = ?', [userId])
-        .then(([rows]) => res.json({ devices: rows }))
-        .catch(err => res.status(500).json({ error: err.message }));
-});
+//     db.execute('SELECT * FROM devices WHERE user_id = ?', [userId])
+//         .then(([rows]) => res.json({ devices: rows }))
+//         .catch(err => res.status(500).json({ error: err.message }));
+// });
 
 // Esimerkin vuoksi, jos haluat testata perusendpointtia:
 app.get('/', (req, res) => {
