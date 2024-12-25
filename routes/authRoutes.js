@@ -42,7 +42,7 @@ router.get('/api/devices/:userId', async (req,res) => {
 // tallenna laite käyttäjälle
 router.post('/api/device', async (req,res) => {
     const { userId, deviceId, name, type, status } = req.body;
-    console.log("req bodyyy", req.body);
+    
     console.log("lähetetään tiedot: ", userId, deviceId, name);
 
     if (!userId || !deviceId || !name) {
@@ -69,14 +69,25 @@ router.post('/api/device', async (req,res) => {
         }
 
         // lisätään uusi laite spacelle
-        user.spaces.devices.push({
+        space.devices.push({
             name,
             type,
             status,
             deviceId
         });
 
-        await user.save();
+        console.log("Devices after push:", space.devices);  // Debug log
+
+        user.markModified('spaces');
+
+
+        await user.save().then((result) => {
+            console.log("Device saved successfully:", result);
+            res.status(201).json({ message: "Device added successfully", user });
+        }).catch((err) => {
+            console.error("Error saving device:", err);
+            res.status(500).json({ error: "Failed to save device" });
+        });
         res.status(201).json({message: "Device added successfully", user})
     } catch (error) {
         console.error("Error adding device:", error);
