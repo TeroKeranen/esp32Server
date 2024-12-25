@@ -67,6 +67,7 @@ router.post('/api/device', async (req,res) => {
             };
             user.spaces.push(space);
         }
+        console.log("SPAAACE", space);
 
         // lisätään uusi laite spacelle
         space.devices.push({
