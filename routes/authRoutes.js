@@ -63,7 +63,7 @@ router.post('/api/device', async (req,res) => {
         if (!space) {
             space = {
                 name: 'Default Space',
-                devices: [name, type,status,deviceId]
+                devices: []
             };
             user.spaces.push(space);
         }
