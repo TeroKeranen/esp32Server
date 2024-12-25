@@ -42,6 +42,7 @@ router.get('/api/devices/:userId', async (req,res) => {
 // tallenna laite käyttäjälle
 router.post('/api/device', async (req,res) => {
     const { userId, deviceId, name, type, status } = req.body;
+    console.log("req bodyyy", req.body);
     console.log("lähetetään tiedot: ", userId, deviceId, name);
 
     if (!userId || !deviceId || !name) {
@@ -71,7 +72,8 @@ router.post('/api/device', async (req,res) => {
         space.devices.push({
             name,
             type,
-            status
+            status,
+            deviceId
         });
 
         await user.save();

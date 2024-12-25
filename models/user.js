@@ -11,6 +11,9 @@ const devicesSchema = new mongoose.Schema({
     },
     status: {
         type: String
+    },
+    deviceId: {
+        type: String
     }
 })
 
