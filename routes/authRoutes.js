@@ -75,7 +75,7 @@ router.post('/api/device', async (req,res) => {
                     deviceId
                 };
 
-                space.devices.push(newDevice);
+                space.devices.set(newDevice);
 
                 console.log("Space pushaamisen jälkeen:", space);
 
