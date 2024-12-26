@@ -31,12 +31,12 @@ router.get('/api/devices/:userId', async (req,res) => {
         if (!user) {
             return res.status(404).json({error: 'User not found'});
         }
-        
+
         // Muunna MongoDB-objekti puhtaaksi JSON:ksi
         const spaces = user.spaces.map(space => {
             return {
                 ...space.toObject(),  // Muuttaa Mongoose-objektin puhtaaksi JSON:ksi
-                devices: space.devices.map(device => device.toObject())  // Muunnetaan myös devices-array
+                devices: space.devices.map(device => JSON.stringify(device))  // Muunnetaan myös devices-array
             };
         });
 
