@@ -89,7 +89,9 @@ router.post('/api/device', async (req,res) => {
         user.markModified('spaces');
 
         const savedUser = await user.save();
-        
+
+        console.log("Saved user:", savedUser);
+
         if (!savedUser) {
             throw new Error("Failed to save user to database");
         }
