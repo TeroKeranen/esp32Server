@@ -88,7 +88,11 @@ router.post('/api/device', async (req,res) => {
         // });
         user.markModified('spaces');
 
-        await user.save();
+        const savedUser = await user.save();
+        
+        if (!savedUser) {
+            throw new Error("Failed to save user to database");
+        }
         res.status(201).json({message: "Device added successfully", user})
     } catch (error) {
         console.error("Error adding device:", error);
