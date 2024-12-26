@@ -55,14 +55,30 @@ router.post('/api/device', async (req,res) => {
             {
                 $push: { "spaces.$.devices": { name, type, status, deviceId } }
             },
-            { new: true, upsert: true }
+            { new: true }
         );
 
+        // Jos päivitystä ei tehty (koska "Default Space" puuttuu), luodaan uusi space
         if (!result) {
-            return res.status(404).json({ error: 'User or Space not found' });
+            console.log("Default Space not found. Creating...");
+
+            const user = await User.findById(userId);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+
+            // Luo uusi space ja lisää laite
+            const newSpace = {
+                name: 'Default Space',
+                devices: [{ name, type, status, deviceId }]
+            };
+
+            user.spaces.push(newSpace);
+            await user.save();
+            return res.status(201).json({ message: "New space created, device added", user });
         }
 
-        console.log("Device added with findOneAndUpdate:", result);
+        console.log("Device added to existing space:", result);
         res.status(201).json({ message: "Device added successfully", user: result });
     } catch (error) {
         console.error("Error adding device:", error);
