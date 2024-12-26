@@ -50,52 +50,20 @@ router.post('/api/device', async (req,res) => {
     }
 
     try {
-        const objectId = new mongoose.Types.ObjectId(userId);
-        const user = await User.findById(objectId);
+        const result = await User.findOneAndUpdate(
+            { _id: userId, "spaces.name": "Default Space" },
+            {
+                $push: { "spaces.$.devices": { name, type, status, deviceId } }
+            },
+            { new: true, upsert: true }
+        );
 
-        if (!user) {
-            return res.status(404).json({error: 'User not found'});
-
-
+        if (!result) {
+            return res.status(404).json({ error: 'User or Space not found' });
         }
 
-        let space = user.spaces.find(s => s.name === 'Default Space');
-        if (!space) {
-            space = {
-                name: 'Default Space',
-                devices: []
-            };
-            user.spaces.push(space);
-        }
-                // Luo uusi laite ja pushaa se
-                const newDevice = {
-                    name,
-                    type,
-                    status,
-                    deviceId
-                };
-
-                space.devices.set(newDevice);
-
-                console.log("Space pushaamisen jälkeen:", space);
-
-        // // lisätään uusi laite spacelle
-        // space.devices.push({
-        //     name,
-        //     type,
-        //     status,
-        //     deviceId
-        // });
-        user.markModified('spaces');
-
-        const savedUser = await user.save();
-
-        console.log("Saved user:", savedUser);
-
-        if (!savedUser) {
-            throw new Error("Failed to save user to database");
-        }
-        res.status(201).json({message: "Device added successfully", user})
+        console.log("Device added with findOneAndUpdate:", result);
+        res.status(201).json({ message: "Device added successfully", user: result });
     } catch (error) {
         console.error("Error adding device:", error);
         res.status(500).json({ error: "Internal Server Error" });
