@@ -82,6 +82,9 @@ wss.on('connection', (ws, req) => {
       console.log('[WS] Connection attempt to invalid path:', req.url);
   }
 });
+app.get('/api/ws-status', (req, res) => {
+  res.json({ connected: wsConnected });
+});
   // HTTP-reitti, jota mobiilisovellus kutsuu LEDin ohjaamiseksi.
 app.post("/api/led", (req, res) => {
     if (!esp32Client) {
