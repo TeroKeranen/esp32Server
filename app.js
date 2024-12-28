@@ -29,6 +29,7 @@ const server = http.createServer(app);
 
 let esp32Client = null;
 
+
 // Luodaan WebSocket-palvelin samaan HTTP-serveriin
 const wss = new WebSocket.Server({ server, path: '/ws' });
 
@@ -82,8 +83,9 @@ wss.on('connection', (ws, req) => {
       console.log('[WS] Connection attempt to invalid path:', req.url);
   }
 });
+// Reitti yhteyden tilan tarkistamiseen (React Expoon)
 app.get('/api/ws-status', (req, res) => {
-  res.json({ connected: wsConnected });
+  res.json({ connected: esp32Client !== null });
 });
   // HTTP-reitti, jota mobiilisovellus kutsuu LEDin ohjaamiseksi.
 app.post("/api/led", (req, res) => {
