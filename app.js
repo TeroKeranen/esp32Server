@@ -105,6 +105,26 @@ app.post("/api/led", (req, res) => {
   
     return res.json({ message: `LED ${state} command sent` });
   });
+
+  app.post("/api/motor", (req,res) => {
+    if (!esp32Client) {
+      return res.status(500).json({error: "No esp32 connected via webSocket"});
+    }
+
+    const {direction} = req.body;
+
+    if (!direction || (direction !== "forward" && direction !== "backward")) {
+      return res.status(400).json({ error: "Invalid direction. Use 'forward' or 'backward'." });
+    }
+
+
+    const message = `motor:${direction}`;
+    esp32Client.send(message);
+    console.log(`[WS -> ESP32] Sent: ${message}`);
+  
+    return res.json({ message: `Motor ${direction} command sent` });
+
+  })
 // db.execute('INSERT IGNORE INTO users (id, name) VALUES (?, ?)', [1, 'Test User']); // tehdään testi käyttäjä
 
 // // Tallenna laite käyttäjälle
