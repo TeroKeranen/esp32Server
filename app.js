@@ -113,7 +113,7 @@ app.post("/api/led", (req, res) => {
 
     const {direction} = req.body;
 
-    if (!direction || (direction !== "forward" && direction !== "backward")) {
+    if (!direction || (direction !== "forward" && direction !== "backward" && direction !== "stop")) {
       return res.status(400).json({ error: "Invalid direction. Use 'forward' or 'backward'." });
     }
 
