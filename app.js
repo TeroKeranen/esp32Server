@@ -125,6 +125,17 @@ app.post("/api/led", (req, res) => {
     return res.json({ message: `Motor ${direction} command sent` });
 
   })
+
+  app.post("/api/motor/speed", (req, res) => {
+    if (!esp32Client) {
+      return res.status(500).json({ error: "No esp32 connected via WebSocket" });
+    }
+    const { speed, direction } = req.body;
+    const message = `motor:speed:${speed}:${direction}`;
+    esp32Client.send(message);
+    console.log(`[WS -> ESP32] Sent: ${message}`);
+    return res.json({ message: `Motor speed ${speed} sent` });
+  });
 // db.execute('INSERT IGNORE INTO users (id, name) VALUES (?, ?)', [1, 'Test User']); // tehdään testi käyttäjä
 
 // // Tallenna laite käyttäjälle
