@@ -33,21 +33,29 @@ let esp32Client = null;
 // Luodaan WebSocket-palvelin samaan HTTP-serveriin
 const wss = new WebSocket.Server({ server, path: '/ws' });
 
+// WebSocket-yhteyden käsittely
+// wss.on('connection', (ws) => {
+//     console.log('[WS] New client connected');
 
+//       // Tallennetaan WebSocket, jotta voimme lähettää viestin /api/led -reitillä
+//      esp32Client = ws;
+  
+//     ws.on('message', (message) => {
+//       console.log('[WS] Received:', message.toString());
+//       // Tässä voit käsitellä ESP32:n tai minkä tahansa laitteen lähettämiä viestejä
+//       // Voit myös vastata takaisin: ws.send('Hello from server');
+//     });
+  
+//     ws.on('close', () => {
+//       console.log('[WS] Client disconnected');
+//     });
+//   });
 // WebSocket-yhteyden käsittely
 wss.on('connection', (ws, req) => {
   // Tarkista, että yhteys tulee polusta '/ws'
   if (req.url === '/ws') {
       console.log('[WS] ESP32 client connected via /ws');
       esp32Client = ws;
-
-      // keep-alive ja aikakatkaisu
-      ws.isAlive = true;
-
-      ws.on('pong', () => {
-        ws.isAlive = true;
-        console.log("[WS] connection alive");
-      })
 
       ws.on('message', (message) => {
           console.log('[WS] Received:', message.toString());
@@ -75,18 +83,6 @@ wss.on('connection', (ws, req) => {
       console.log('[WS] Connection attempt to invalid path:', req.url);
   }
 });
-
-const interval = setInterval(() => {
-  wss.clients.forEach((ws) => {
-    if (ws.isAlive === false) {
-      console.log("[WS] client unresponsive, terminating connection...");
-      return ws.terminate();
-    }
-
-    ws.isAlive = false;
-    ws.ping();
-  })
-}, 30000)
 // Reitti yhteyden tilan tarkistamiseen (React Expoon)
 app.get('/api/ws-status', (req, res) => {
   res.json({ connected: esp32Client !== null });
