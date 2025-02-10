@@ -51,6 +51,8 @@ const wss = new WebSocket.Server({ server, path: '/ws' });
 //     });
 //   });
 // WebSocket-yhteyden käsittely
+let relayStatus = "unknown";  // Tallennetaan viimeisin releen tila
+
 wss.on('connection', (ws, req) => {
   // Tarkista, että yhteys tulee polusta '/ws'
   if (req.url === '/ws') {
@@ -64,6 +66,12 @@ wss.on('connection', (ws, req) => {
             // Vastaa pongilla
             ws.send('pong');
             console.log('[WS] Responded with pong');
+        }
+
+              // 🔹 Kun ESP32 lähettää "relay:closed" tai "relay:open", päivitetään tila
+        if (message.toString().startsWith("relay:")) {
+          relayStatus = message.toString().split(":")[1]; // "closed" tai "open"
+          console.log("[WS] Relay status updated:", relayStatus);
         }
           // Voit käsitellä ESP32:n tai muiden laitteiden lähettämiä viestejä täällä
           // Esimerkiksi: ws.send('Hello from server');
@@ -137,13 +145,10 @@ app.post("/api/led", (req, res) => {
     return res.json({ message: `Motor speed ${speed} sent` });
   });
 
-  app.get("/api/relay-status", (req,res) => {
-    if (!esp32Client) {
-      return res.status(500).json({error: "no esp32 connected via websocket"})
-    }
-    esp32Client.send("relay:get");
-    return res.json({ message: "Relay status request sent" });
-  })
+// 🔹 API reitti, joka palauttaa viimeisimmän tiedon
+app.get("/api/relay-status", (req, res) => {
+  res.json({ relayStatus });
+});
 // db.execute('INSERT IGNORE INTO users (id, name) VALUES (?, ?)', [1, 'Test User']); // tehdään testi käyttäjä
 
 // // Tallenna laite käyttäjälle
