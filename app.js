@@ -67,12 +67,17 @@ wss.on('connection', (ws, req) => {
             ws.send('pong');
             console.log('[WS] Responded with pong');
         }
-
-              // 🔹 Kun ESP32 lähettää "relay:closed" tai "relay:open", päivitetään tila
-        if (message.toString().startsWith("relay:")) {
-          relayStatus = message.toString().split(":")[1]; // "closed" tai "open"
-          console.log("[WS] Relay status updated:", relayStatus);
+        if (message.toString() === "relay:get") {
+          ws.send(`relay:${relayStatus}`);
         }
+              // 🔹 Kun ESP32 lähettää "relay:closed" tai "relay:open", päivitetään tila
+              if (message.toString().startsWith("relay:")) {
+                relayStatus = message.toString().split(":")[1];
+                wss.clients.forEach((client) => {
+                  if (client.readyState === WebSocket.OPEN) {
+                    client.send(`relay:${relayStatus}`);
+                  }
+                });
           // Voit käsitellä ESP32:n tai muiden laitteiden lähettämiä viestejä täällä
           // Esimerkiksi: ws.send('Hello from server');
       });
