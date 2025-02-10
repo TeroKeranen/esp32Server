@@ -59,6 +59,14 @@ wss.on('connection', (ws, req) => {
       console.log('[WS] ESP32 client connected via /ws');
       esp32Client = ws;
 
+          // 🔹 Pidä WebSocket aktiivisena (Heroku tappaa sen muuten)
+      const keepAliveInterval = setInterval(() => {
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send("ping");  // Lähetetään "ping" viesti ESP32:lle
+            console.log("[WS] Sent keep-alive ping to ESP32");
+        }
+    }, 30000);  // Lähetetään ping joka 30 sekunti
+
       ws.on('message', (message) => {
           console.log('[WS] Received:', message.toString());
 
@@ -88,6 +96,7 @@ wss.on('connection', (ws, req) => {
 
       ws.on('close', () => {
           console.log('[WS] ESP32 client disconnected');
+          clearInterval(keepAliveInterval); // 🔹 Lopetetaan ping-viestit
           esp32Client = null;
       });
 
