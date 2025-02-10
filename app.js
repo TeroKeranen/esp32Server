@@ -136,6 +136,14 @@ app.post("/api/led", (req, res) => {
     console.log(`[WS -> ESP32] Sent: ${message}`);
     return res.json({ message: `Motor speed ${speed} sent` });
   });
+
+  app.get("/api/relay-status", (req,res) => {
+    if (!esp32Client) {
+      return res.status(500).json({error: "no esp32 connected via websocket"})
+    }
+    esp32Client.send("relay:get");
+    return res.json({ message: "Relay status request sent" });
+  })
 // db.execute('INSERT IGNORE INTO users (id, name) VALUES (?, ?)', [1, 'Test User']); // tehdään testi käyttäjä
 
 // // Tallenna laite käyttäjälle
