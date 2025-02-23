@@ -14,13 +14,15 @@ In this project, I have an ESP32 device that can be connected to an Wi-Fi networ
 ### Pushing code to Heroku
 When you want to test new code, you need to push it to Heroku.
 
-    ```
+    ```sh
     git add .
     ```
+
 
     ```
     git commit -m "your text"
     ```
+    
 
     ```
     git push -u heroku master
