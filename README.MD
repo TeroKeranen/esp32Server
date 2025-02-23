@@ -16,6 +16,7 @@ When you want to test new code, you need to push it to Heroku.
 
     ```
     git add .
+    ```
 
     ```
     git commit -m "your text"
